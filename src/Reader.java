@@ -1,10 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Reader {
 
@@ -46,12 +44,16 @@ public class Reader {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            System.out.println("could not find file");
         }
-        this.printMap();
 
+        this.sortMap();
+        this.printMap();
     }
 
+    /**
+     * prompts user for caps option
+     */
     public void capsOption(){
         System.out.println("Do you wish to include caps? y/n");
         Scanner input = new Scanner(System.in);
@@ -61,13 +63,31 @@ public class Reader {
     }
 
     /**
+     * sorts map through use of map entry
+     * Comparator reverse order is called in order to get in descending order
+     */
+    public void sortMap(){
+        Map<Character, Integer> sortedMap = this.getCharList().entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        this.charList = (HashMap<Character, Integer>) sortedMap;
+    }
+
+
+    /**
      * prints each key and it's value
      */
     public void printMap(){
         System.out.println("Total Characters: " + this.getCharList().size());
+        int counter = 0;
         for (Character keys: this.getCharList().keySet()) {
+            if (counter == 10){
+                break;
+            }
             String value = this.getCharList().get(keys).toString();
             System.out.println(keys + " (" + value + ")");
+            counter++;
         }
     }
 

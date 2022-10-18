@@ -8,6 +8,7 @@ public class Reader {
 
     private HashMap<Character,Integer> charList;
     private Boolean countCaps = false;
+    private int charCount = 0;
 
     public Reader(){
         charList = new HashMap<>();
@@ -18,6 +19,7 @@ public class Reader {
         Reader reader = new Reader();
         reader.capsOption();
         reader.read();
+
     }
 
     /**
@@ -27,19 +29,19 @@ public class Reader {
      */
     public void read(){
 
-        try (FileReader fileReader = new FileReader("src/textFiles/Sample.txt");
+        try (FileReader fileReader = new FileReader("CountCharacters/src/textFiles/Sample.txt");
              BufferedReader reader = new BufferedReader(fileReader)) {
-
-            // When there are no more lines, readLine() return null.
+                
+            // When there are no more lines, readLine() return null
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 for(char chr : line.toCharArray()){
-                    if(countCaps) {
-                        if (this.checkUpperCase(chr)) {
-                            addToMap(chr);
-                        }
+                    if(Character.isWhitespace(chr)){
+                        continue;
                     }
-                    if(this.checkLowerCase(chr)){
+                    if(countCaps) {
                         addToMap(chr);
+                    } else{
+                        addToMap(Character.toLowerCase(chr));
                     }
                 }
             }
@@ -76,52 +78,21 @@ public class Reader {
 
 
     /**
-     * prints each key and it's value
+     * prints each key and its value
      */
     public void printMap(){
-        System.out.println("Total Characters: " + this.getCharList().size());
         int counter = 0;
+        System.out.println("Total Characters: " + this.charCount);
         for (Character keys: this.getCharList().keySet()) {
-            if (counter == 10){
-                break;
-            }
+            //if (counter == 10){
+              //  break;
+            //}
             String value = this.getCharList().get(keys).toString();
             System.out.println(keys + " (" + value + ")");
             counter++;
         }
-    }
 
 
-    /**
-     * loops through lower case alphabet and compares ascii code of alphabet to character.
-     * @param character
-     * @return true if loop value is equal to characters ascii code
-     */
-    public boolean checkUpperCase(Character character){
-
-        for (int i = 65; i <= 90; i++ ){
-            char ascii = (char)i;
-            if(ascii == character){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * loops through lower case alphabet and compares ascii code of alphabet to character.
-     * @param character
-     * @return true if loop value is equal to characters ascii code
-     */
-    public boolean checkLowerCase(Character character){
-        //lower case alphabet ascii range
-        for (int i = 97; i <= 122; i++ ){
-            char ascii = (char)i;
-            if(ascii == character){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -130,9 +101,11 @@ public class Reader {
      */
     public void addToMap(Character character){
             if(!checkPresence(character)){
-                this.getCharList().put(character,0);
+                this.getCharList().put(character,1);
+            } else {
+                this.getCharList().put(character, this.getCharList().get(character) + 1);
             }
-            this.getCharList().put(character,this.getCharList().get(character) + 1);
+            this.charCount++;
     }
 
     /**
@@ -141,17 +114,12 @@ public class Reader {
      * @return true if hashmap already has a key equal to character
      */
     public boolean checkPresence(Character character){
-        Iterator<Map.Entry<Character, Integer> > iterator = this.getCharList().entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            Map.Entry<Character,Integer> map = iterator.next();
-
-            //check if key is already in hashmap
-            if (character == map.getKey()) {
-                return true;
-            }
+        charList = this.getCharList();
+        if(charList.containsKey(character)){
+            return true;
+        } else{
+            return false;
         }
-        return false;
     }
 
     /**

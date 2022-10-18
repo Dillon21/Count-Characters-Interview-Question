@@ -29,7 +29,7 @@ public class Reader {
      */
     public void read(){
 
-        try (FileReader fileReader = new FileReader("CountCharacters/src/textFiles/Sample.txt");
+        try (FileReader fileReader = new FileReader("src/textFiles/Sample.txt");
              BufferedReader reader = new BufferedReader(fileReader)) {
                 
             // When there are no more lines, readLine() return null
@@ -84,9 +84,9 @@ public class Reader {
         int counter = 0;
         System.out.println("Total Characters: " + this.charCount);
         for (Character keys: this.getCharList().keySet()) {
-            //if (counter == 10){
-              //  break;
-            //}
+            if (counter == 10){
+                break;
+            }
             String value = this.getCharList().get(keys).toString();
             System.out.println(keys + " (" + value + ")");
             counter++;
